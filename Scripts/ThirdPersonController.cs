@@ -40,7 +40,6 @@ public class ThirdPersonController : MonoBehaviour
     void Update()
     {
         inputMagnitude = desiredMovementDirection.sqrMagnitude;
-        Debug.Log(inputMagnitude);
         characterAnimator.SetFloat(inputMagnitudeParameter, inputMagnitude, 0f, Time.deltaTime);
 
         if (inputMagnitude > allowRotation)

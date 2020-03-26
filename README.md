@@ -1,2 +1,2 @@
 # Flexible-TPC
-A flexible third person controller for Unity
+A flexible(kinda) third person controller for Unity

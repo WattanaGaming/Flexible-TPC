@@ -9,6 +9,7 @@ public class TPCInput : MonoBehaviour
 {
     public string horizontalInputName = "Horizontal";
     public string verticalInputName = "Vertical";
+    public KeyCode sprintKey = KeyCode.LeftShift;
 
     private ThirdPersonController tpc;
     private Camera mainCamera;
@@ -36,5 +37,6 @@ public class TPCInput : MonoBehaviour
         camRight.Normalize();
 
         tpc.desiredMovementDirection = camForward * InputY + camRight * InputX;
+        tpc.isSprinting = Input.GetKey(sprintKey);
     }
 }

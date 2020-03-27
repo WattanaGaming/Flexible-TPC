@@ -12,20 +12,22 @@ on an exam until the last moments before the chime?
 [RequireComponent(typeof(CharacterController))]
 public class ThirdPersonController : MonoBehaviour
 {
-    [Header("Animator settings")]
-    public string inputMagnitudeParameter = "InputMagnitude";
-
     [Header("Movement settings")]
     public float rotationSpeed = 0.1f;
     [Tooltip("Specify the minimum input magnitude required for the character to start rotating.")]
     public float allowRotation;
-    
+    public bool allowSprinting;
+
+    [Header("Animator settings")]
+    public string inputMagnitudeParameter = "InputMagnitude";
+    public string sprintingBoolParameter = "Sprinting";
+
     // Receive inputs from a separate script
     [HideInInspector] public Vector3 desiredMovementDirection;
+    [HideInInspector] public bool isSprinting;
 
     private Animator characterAnimator;
     private CharacterController characterController;
-
     // These are used to calculate movement and rotation
     private float inputMagnitude;
 
@@ -40,12 +42,14 @@ public class ThirdPersonController : MonoBehaviour
     void Update()
     {
         inputMagnitude = desiredMovementDirection.sqrMagnitude;
+
         characterAnimator.SetFloat(inputMagnitudeParameter, inputMagnitude, 0f, Time.deltaTime);
+        if (allowSprinting)
+            characterAnimator.SetBool(sprintingBoolParameter, isSprinting);
 
         if (inputMagnitude > allowRotation)
         {
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(desiredMovementDirection), rotationSpeed);
         }
-        
     }
 }

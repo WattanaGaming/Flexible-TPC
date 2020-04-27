@@ -16,19 +16,15 @@ public class ThirdPersonController : MonoBehaviour
     public float rotationSpeed = 0.1f;
     [Tooltip("Specify the minimum input magnitude required for the character to start rotating.")]
     public float allowRotation;
-    public bool allowSprinting;
 
-    [Header("Animator settings")]
+    [Header("Animator parameters")]
     public string inputMagnitudeParameter = "InputMagnitude";
-    public string sprintingBoolParameter = "Sprinting";
 
     // Receive inputs from a separate script
     [HideInInspector] public Vector3 desiredMovementDirection;
-    [HideInInspector] public bool isSprinting;
 
     private Animator characterAnimator;
     private CharacterController characterController;
-    // These are used to calculate movement and rotation
     private float inputMagnitude;
 
     // Start is called before the first frame update
@@ -44,8 +40,6 @@ public class ThirdPersonController : MonoBehaviour
         inputMagnitude = desiredMovementDirection.sqrMagnitude;
 
         characterAnimator.SetFloat(inputMagnitudeParameter, inputMagnitude, 0f, Time.deltaTime);
-        if (allowSprinting)
-            characterAnimator.SetBool(sprintingBoolParameter, isSprinting);
 
         if (inputMagnitude > allowRotation)
         {

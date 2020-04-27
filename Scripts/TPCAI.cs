@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-// Example script to make the controller  follow an object
+// Example script to make the character follow an object
 public class TPCAI : MonoBehaviour
 {
     public Transform objectToFollow;

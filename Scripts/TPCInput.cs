@@ -11,7 +11,7 @@ public class TPCInput : MonoBehaviour
     public string verticalInputName = "Vertical";
 
     private ThirdPersonController tpc;
-    private Camera mainCamera;
+    private Transform mainCameraTransform;
     private float InputX;
     private float InputY;
 
@@ -19,7 +19,7 @@ public class TPCInput : MonoBehaviour
     void Start()
     {
         tpc = this.GetComponent<ThirdPersonController>();
-        mainCamera = Camera.main;
+        mainCameraTransform = Camera.main.transform;
     }
 
     // Update is called once per frame
@@ -28,8 +28,8 @@ public class TPCInput : MonoBehaviour
         InputX = Input.GetAxis(horizontalInputName);
         InputY = Input.GetAxis(verticalInputName);
 
-        Vector3 camForward = mainCamera.transform.forward;
-        Vector3 camRight = mainCamera.transform.right;
+        Vector3 camForward = mainCameraTransform.forward;
+        Vector3 camRight = mainCameraTransform.right;
 
         camForward.y = camRight.y = 0f;
         camForward.Normalize();

@@ -8,11 +8,14 @@ public class ThirdPersonCameraController : MonoBehaviour
     [Header("General settings")]
     public Transform target;
     public Vector3 targetOffset;
+    public bool isActive = true;
+
+    [Header("Camera and movement settings")]
     public float cameraDistance = 5f;
     public float cameraPadding = 0.1f;
-    public float orbitSpeedMultiplier = 1.5f;
+    public Vector2 mouseSensitivity = new Vector2(2f, 1f);
+    public float orbitSpeedMultiplier = 1f;
     public LayerMask collisionMask;
-    public bool isActive = true;
 
     [Header("Input settings")]
     public string mouseX = "Mouse X";
@@ -20,10 +23,24 @@ public class ThirdPersonCameraController : MonoBehaviour
 
     private Transform pivot;
     private Vector2 mouseVector;
-    
+    private Vector2 mouseDelta;
+
     // Start is called before the first frame update
     void Start()
     {
+        if (target == null)
+        {
+            Debug.LogError("The target transform is not set. Camera controller disabled");
+            isActive = false;
+            return;
+        }
+        else if (target == this.transform)
+        {
+            Debug.LogError("The target transform should not be the camera itself. Camera controller disabled");
+            isActive = false;
+            return;
+        }
+        
         Debug.Log("Creating a pivot GameObject");
         pivot = new GameObject().transform;
         pivot.name = "Pivot";
@@ -34,14 +51,16 @@ public class ThirdPersonCameraController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        mouseVector.x += Input.GetAxis(mouseX) * orbitSpeedMultiplier * 1.5f;
-        mouseVector.y += -Input.GetAxis(mouseY) * orbitSpeedMultiplier;
+        mouseDelta = new Vector2(Input.GetAxis(mouseX), Input.GetAxis(mouseY));
+        mouseDelta.Scale(mouseSensitivity * orbitSpeedMultiplier);
+
+        mouseVector += mouseDelta;
         mouseVector.y = Mathf.Clamp(mouseVector.y, -90f, 90f);
 
         if (isActive)
         {
             pivot.position = target.position + targetOffset;
-            pivot.eulerAngles = new Vector3(mouseVector.y, mouseVector.x, 0f);
+            pivot.eulerAngles = new Vector3(-mouseVector.y, mouseVector.x, 0f);
 
             AdjustCameraDistance();
         }
@@ -65,7 +84,10 @@ public class ThirdPersonCameraController : MonoBehaviour
     {
         Gizmos.color = Color.green;
 
-        Gizmos.DrawSphere(target.position + targetOffset, 0.25f);
-        Gizmos.DrawWireSphere(target.position + targetOffset, cameraDistance);
+        if (target != null)
+        {
+            Gizmos.DrawSphere(target.position + targetOffset, 0.25f);
+            Gizmos.DrawWireSphere(target.position + targetOffset, cameraDistance);
+        }
     }
 }

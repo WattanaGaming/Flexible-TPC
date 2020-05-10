@@ -1,4 +1,4 @@
-# Flexible-TPC
+# Flexible Third Person Kit
 A flexible(kinda) third person kit for Unity. Based on Filmstorm's tutorial script.
 
 I made this controller out of my need for a proper, easy-to-use controller that can be expanded upon. 

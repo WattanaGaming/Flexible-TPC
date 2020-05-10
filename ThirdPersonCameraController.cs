@@ -6,8 +6,10 @@ using UnityEngine;
 public class ThirdPersonCameraController : MonoBehaviour
 {
     [Header("General settings")]
-    public Transform pivot;
+    public Transform target;
+    public Vector3 targetOffset;
     public float cameraDistance = 5f;
+    public float cameraPadding = 0.1f;
     public float orbitSpeedMultiplier = 1.5f;
     public LayerMask collisionMask;
     public bool isActive = true;
@@ -16,21 +18,17 @@ public class ThirdPersonCameraController : MonoBehaviour
     public string mouseX = "Mouse X";
     public string mouseY = "Mouse Y";
 
+    private Transform pivot;
     private Vector2 mouseVector;
     
     // Start is called before the first frame update
     void Start()
     {
-        if (pivot == null)
-        {
-            Debug.LogError("The pivot point is not set. Please assign a pivot point before using this camera(Controller is now disabled).");
-            isActive = false;
-        }
-        else if (transform.parent != pivot)
-        {
-            Debug.LogWarning("The pivot point is not the parent of this camera. Setting the pivot point as the parent object.");
-            transform.parent = pivot;
-        }
+        Debug.Log("Creating a pivot GameObject");
+        pivot = new GameObject().transform;
+        pivot.name = "Pivot";
+        Debug.Log("Setting the new GameObject as the parent of the camera");
+        transform.parent = pivot;
     }
 
     // Update is called once per frame
@@ -42,27 +40,32 @@ public class ThirdPersonCameraController : MonoBehaviour
 
         if (isActive)
         {
-            RotatePivot();
+            pivot.position = target.position + targetOffset;
+            pivot.eulerAngles = new Vector3(mouseVector.y, mouseVector.x, 0f);
+
             AdjustCameraDistance();
         }
     }
 
-    void RotatePivot()
-    {
-        pivot.eulerAngles = new Vector3(mouseVector.y, mouseVector.x, 0f);
-    }
-
     void AdjustCameraDistance()
     {
-        transform.localPosition = new Vector3(0f, 0f, -cameraDistance);
+        transform.localPosition = new Vector3(0f, 0f, -cameraDistance + cameraPadding);
 
         RaycastHit hit;
         if (Physics.Raycast(pivot.position, -pivot.forward, out hit, Mathf.Infinity, collisionMask))
         {
             if (hit.distance < cameraDistance)
             {
-                transform.localPosition = new Vector3(0f, 0f, -hit.distance);
+                transform.localPosition = new Vector3(0f, 0f, -hit.distance + cameraPadding);
             }
         }
+    }
+
+    void OnDrawGizmos()
+    {
+        Gizmos.color = Color.green;
+
+        Gizmos.DrawSphere(target.position + targetOffset, 0.25f);
+        Gizmos.DrawWireSphere(target.position + targetOffset, cameraDistance);
     }
 }

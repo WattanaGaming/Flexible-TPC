@@ -80,7 +80,7 @@ public class ThirdPersonCameraController : MonoBehaviour
         }
     }
 
-    void OnDrawGizmos()
+    void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.green;
 

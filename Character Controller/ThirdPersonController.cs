@@ -23,7 +23,7 @@ public class ThirdPersonController : MonoBehaviour
     // Receive inputs from a separate script
     [HideInInspector] public Vector3 desiredMovementDirection;
 
-    private Animator characterAnimator;
+    [HideInInspector] public Animator characterAnimator; // This one is made public for external control
     private CharacterController characterController;
     private float inputMagnitude;
 
@@ -37,8 +37,8 @@ public class ThirdPersonController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // TODO: Make the movement FPS-independent.
         inputMagnitude = desiredMovementDirection.sqrMagnitude;
-
         characterAnimator.SetFloat(inputMagnitudeParameter, inputMagnitude, 0f, Time.deltaTime);
 
         if (inputMagnitude > allowRotation)
@@ -46,4 +46,19 @@ public class ThirdPersonController : MonoBehaviour
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(desiredMovementDirection), rotationSpeed);
         }
     }
+}
+
+[System.Serializable]
+public struct ActionMap
+{
+    public string animatorParameter;
+    public KeyCode activationKey; // This is only used by the input script. It's up to the developer to decide if they want to use this or not.
+    public ActivationType activationType;
+}
+
+public enum ActivationType
+{
+    KeyDown,
+    KeyUp,
+    Hold
 }
